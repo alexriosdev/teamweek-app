@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
@@ -13,6 +13,9 @@ import TableRow from "@material-ui/core/TableRow";
 import { Button, Container, Typography } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import { format } from "date-fns";
+
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMembers } from "../../actions/apiActions";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 170 },
@@ -87,6 +90,13 @@ const handleClick = (value) => {
 
 const WeekSchedule = ({ days }) => {
   const classes = useStyles();
+  const testers = useSelector((state) => state.userState.users);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    fetchMembers(dispatch);
+  }, []);
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 

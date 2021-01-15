@@ -15,11 +15,13 @@ CalendarDate.destroy_all
 Schedule.destroy_all
 
 u1 = User.create(
+  admin: true,
   email: "test@test.com",
   password: "123",
   first_name: "Jon",
-  last_name: "Snow"
-  # avatar: "https://www.seekpng.com/png/full/172-1726126_michael-scott-prison-prison-mike.png",
+  last_name: "Snow",
+  phone_number: Faker::PhoneNumber.cell_phone,
+  avatar: "https://upload.wikimedia.org/wikipedia/en/3/30/Jon_Snow_Season_8.png"
 )
 
 5.times {
@@ -27,8 +29,9 @@ u1 = User.create(
     email: Faker::Internet.email,
     password: "123",
     first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name
-    # avatar: "https://www.seekpng.com/png/full/172-1726126_michael-scott-prison-prison-mike.png",
+    last_name: Faker::Name.last_name,
+    phone_number: Faker::PhoneNumber.cell_phone,
+    avatar: Faker::Avatar.image
   )
 }
 

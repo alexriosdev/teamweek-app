@@ -9,7 +9,7 @@ class OrganizationsController < ApplicationController
   def show
     render json: @organization.to_json(
       include: [{ 
-        users:        { except: [:created_at, :updated_at, :password] },
+        users:        { except: [:created_at, :updated_at, :password_digest] },
         memberships:  { except: [:created_at, :updated_at] },
       }]
     )

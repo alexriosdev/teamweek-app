@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -11,7 +11,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { userSignup } from "../actions/apiActions";
 
 const Copyright = () => {
   return (
@@ -51,6 +53,33 @@ const useStyles = makeStyles((theme) => ({
 const Signup = () => {
   const classes = useStyles();
 
+  const initialState = {
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  };
+  const [user, setUser] = useState(initialState);
+
+  const handleChange = (event) => {
+    setUser({
+      ...user,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const clearState = () => {
+    setUser({ ...initialState });
+  };
+
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    userSignup(dispatch, user, history);
+    clearState();
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -65,29 +94,35 @@ const Signup = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                autoComplete="fname"
-                name="firstName"
+                onChange={handleChange}
+                value={user.first_name}
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
+                id="first_name"
+                name="first_name"
                 label="First Name"
+                autoComplete="fname"
                 autoFocus
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                onChange={handleChange}
+                value={user.last_name}
                 variant="outlined"
                 required
                 fullWidth
-                id="lastName"
+                id="last_name"
                 label="Last Name"
-                name="lastName"
+                name="last_name"
                 autoComplete="lname"
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
+                onChange={handleChange}
+                value={user.email}
                 variant="outlined"
                 required
                 fullWidth
@@ -99,13 +134,15 @@ const Signup = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                onChange={handleChange}
+                value={user.password}
                 variant="outlined"
                 required
                 fullWidth
+                id="password"
                 name="password"
                 label="Password"
                 type="password"
-                id="password"
                 autoComplete="current-password"
               />
             </Grid>
@@ -117,10 +154,11 @@ const Signup = () => {
             </Grid> */}
           </Grid>
           <Button
+            onClick={handleSubmit}
             type="submit"
-            fullWidth
             variant="contained"
             color="primary"
+            fullWidth
             className={classes.submit}
           >
             Sign Up

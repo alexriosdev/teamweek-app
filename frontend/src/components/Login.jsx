@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -11,7 +11,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { userLogin } from "../actions/apiActions";
 
 const Copyright = () => {
   return (
@@ -51,6 +53,28 @@ const useStyles = makeStyles((theme) => ({
 const Login = () => {
   const classes = useStyles();
 
+  const initialState = { email: "test@test.com", password: "123" };
+  const [user, setUser] = useState(initialState);
+
+  const handleChange = (event) => {
+    setUser({
+      ...user,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const clearState = () => {
+    setUser({ ...initialState });
+  };
+
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    userLogin(dispatch, user, history);
+    clearState();
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -63,17 +87,21 @@ const Login = () => {
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
+            onChange={handleChange}
+            value={user.email}
             variant="outlined"
             margin="normal"
             required
             fullWidth
             id="email"
-            label="Email Address"
             name="email"
+            label="Email Address"
             autoComplete="email"
             autoFocus
           />
           <TextField
+            onChange={handleChange}
+            value={user.password}
             variant="outlined"
             margin="normal"
             required
@@ -89,10 +117,11 @@ const Login = () => {
             label="Remember me"
           /> */}
           <Button
+            onClick={handleSubmit}
             type="submit"
-            fullWidth
             variant="contained"
             color="primary"
+            fullWidth
             className={classes.submit}
           >
             Log In

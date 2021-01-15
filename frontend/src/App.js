@@ -10,6 +10,7 @@ import Signup from "./components/Signup";
 import Nav from "./components/navbar/Nav";
 import NavDrawer from "./components/navbar/NavDrawer";
 import WeekSchedule from "./components/schedule/WeekSchedule";
+import ScheduleContainer from "./components/schedule/ScheduleContainer";
 
 const App = () => {
   return (
@@ -20,7 +21,7 @@ const App = () => {
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route exact path="/">
-          <WeekSchedule />
+          <ScheduleContainer />
         </Route>
       </Switch>
     </Router>

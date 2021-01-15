@@ -10,8 +10,9 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import { Container, Typography } from "@material-ui/core";
+import { Button, Container, Typography } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
+import { format } from "date-fns";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 170 },
@@ -46,7 +47,7 @@ const createData = (
   };
 };
 
-const rows = [
+const users = [
   createData("Zeus", "9-5PM", "", "8-6PM"),
   createData("Hades", "9-5PM"),
   createData("Poseidon", "9-5PM"),
@@ -75,8 +76,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   icon: {
-    backgroundColor: theme.palette.primary.light,
-    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
   },
 }));
 
@@ -84,7 +85,7 @@ const handleClick = (value) => {
   console.log("user", value);
 };
 
-const WeekSchedule = () => {
+const WeekSchedule = ({ days }) => {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -98,71 +99,89 @@ const WeekSchedule = () => {
     setPage(0);
   };
 
-  return (
-    <Container maxWidth="xl" style={{ position: "relative" }}>
-      <Typography variant="h4">Week Schedule</Typography>
+  const UserCell = ({ value }) => {
+    return (
+      <Chip
+        onClick={() => handleClick(value)}
+        label={value}
+        avatar={
+          <Avatar>
+            <PersonIcon className={classes.icon} />
+          </Avatar>
+        }
+      />
+    );
+  };
 
-      <Paper className={classes.root}>
-        <TableContainer className={classes.container}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column.id} className={classes.head}>
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.name}
-                      className={classes.body}
-                    >
-                      {columns.map((column) => {
-                        const cellValue = row[column.id];
-                        return (
-                          <TableCell key={column.id}>
-                            {column.id === "name" ? (
-                              <Chip
-                                onClick={() => handleClick(cellValue)}
-                                label={cellValue}
-                                avatar={
-                                  <Avatar>
-                                    <PersonIcon className={classes.icon} />
-                                  </Avatar>
-                                }
-                              />
-                            ) : (
-                              cellValue
-                            )}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </Container>
+  const HeaderRow = ({ days }) => {
+    const columns = days.map((day) => format(day, "dd EEE"));
+    columns.unshift("Name");
+    return columns.map((column, idx) => (
+      <TableCell key={idx} className={classes.head}>
+        {column}
+      </TableCell>
+    ));
+  };
+
+  const BodyRow = ({ users, days }) => {
+    const columns = days.map((day) => format(day, "EEEE").toLowerCase());
+    columns.unshift("name");
+    return users
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((user, idx) => {
+        return (
+          <TableRow
+            hover
+            role="checkbox"
+            tabIndex={-1}
+            key={idx}
+            className={classes.body}
+          >
+            {columns.map((column, idx) => {
+              const cellValue = user[column];
+              return (
+                <TableCell
+                  key={idx}
+                  // BUGGY LISTENER NEEDS FIX
+                  onClick={() => console.log("clicked on", cellValue)}
+                >
+                  {column === "name" ? (
+                    <UserCell value={cellValue} />
+                  ) : (
+                    cellValue
+                  )}
+                </TableCell>
+              );
+            })}
+          </TableRow>
+        );
+      });
+  };
+
+  return (
+    <Paper className={classes.root}>
+      <TableContainer className={classes.container}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              <HeaderRow days={days} />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <BodyRow users={users} days={days} />
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={users.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+    </Paper>
   );
 };
 

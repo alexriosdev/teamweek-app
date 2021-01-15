@@ -6,6 +6,7 @@ import {
   Badge,
   Button,
   CssBaseline,
+  Container,
   Divider,
   Drawer,
   IconButton,
@@ -20,10 +21,9 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MenuIcon from "@material-ui/icons/Menu";
 import PersonIcon from "@material-ui/icons/Person";
-
-// import { Link } from "react-router-dom";
-
 import { mainListItems, secondaryListItems } from "./Sidebar";
+import ScheduleContainer from "../schedule/ScheduleContainer";
+// import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -182,8 +182,10 @@ const NavDrawer = () => {
         <List>{secondaryListItems}</List>
       </Drawer>
       <main className={classes.content}>
-        {/* <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}></Container> */}
+        <div className={classes.appBarSpacer} />
+        <Container maxWidth="lg" className={classes.container}>
+          <ScheduleContainer />
+        </Container>
       </main>
     </div>
   );

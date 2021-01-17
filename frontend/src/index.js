@@ -8,11 +8,6 @@ import store from "./reducers/store";
 import { ThemeProvider } from "@material-ui/styles";
 import { blueTheme, redTheme, pinkTheme } from "./theme";
 
-// Manually Implementing the store
-// import { createStore, combineReducers } from "redux";
-// import userReducer from "./reducers/userReducer";
-// const store = createStore(userReducer); /* code change */
-
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={pinkTheme}>

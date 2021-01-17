@@ -13,50 +13,8 @@ import TableRow from "@material-ui/core/TableRow";
 import { Button, Container, Typography } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import { format } from "date-fns";
-
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMembers } from "../../actions/apiActions";
-
-const columns = [
-  { id: "name", label: "Name", minWidth: 170 },
-  { id: "monday", label: "Monday" },
-  { id: "tuesday", label: "Tuesday" },
-  { id: "wednesday", label: "Wednesday" },
-  { id: "thrusday", label: "Thrusday" },
-  { id: "friday", label: "Friday" },
-  { id: "saturday", label: "Saturday" },
-  { id: "sunday", label: "Sunday" },
-];
-
-const createData = (
-  name,
-  monday,
-  tuesday,
-  wednesday,
-  thrusday,
-  friday,
-  saturday,
-  sunday
-) => {
-  return {
-    name,
-    monday,
-    tuesday,
-    wednesday,
-    thrusday,
-    friday,
-    saturday,
-    sunday,
-  };
-};
-
-const users = [
-  createData("Zeus", "9-5PM", "", "8-6PM"),
-  createData("Hades", "9-5PM"),
-  createData("Poseidon", "9-5PM"),
-  createData("Aries", "9-5PM"),
-  createData("Apollo", "9-5PM"),
-];
+import { fetchDateSchedule, fetchMembers } from "../../actions/apiActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,20 +40,33 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
   },
+  userCell: {
+    padding: theme.spacing(1),
+  },
+  timeCell: {
+    color: theme.palette.primary.dark,
+    fontSize: "0.6rem",
+    fontWeight: 700,
+  },
 }));
 
 const handleClick = (value) => {
-  console.log("user", value);
+  console.log("Value: ", value);
 };
 
 const WeekSchedule = ({ days }) => {
   const classes = useStyles();
-  const testers = useSelector((state) => state.userState.users);
+  const users = useSelector((state) => state.userState.users);
+  const schedules = useSelector((state) => state.scheduleState.schedules);
 
   const dispatch = useDispatch();
   useEffect(() => {
     fetchMembers(dispatch);
-  }, []);
+    for (let i = 0; i < days.length; i++) {
+      let date = format(days[i], "P");
+      fetchDateSchedule(dispatch, { format_date: date });
+    }
+  }, [days]);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -109,17 +80,69 @@ const WeekSchedule = ({ days }) => {
     setPage(0);
   };
 
+  const columns = days.map((day) => format(day, "P"));
+
+  // WORKING FUNCTION✅
+  const scheduleSorter = () => {
+    let sorterInner = [];
+    let sorterOuter = [];
+    for (let x = 0; x < users.length; x++) {
+      if (!sorterInner.includes(users[x])) {
+        sorterInner.push(users[x]); // First push the User, if it's not in the array
+      }
+      for (let i = 0; i < columns.length; i++) {
+        for (let j = 0; j < schedules.length; j++) {
+          if (columns[i] === schedules[j].format_date) {
+            // If the Date exists, continue
+            if (schedules[j].schedules) {
+              for (let k = 0; k < schedules[j].schedules.length; k++) {
+                if (schedules[j].schedules[k]) {
+                  // If the schedule exists, continue
+                  if (schedules[j].schedules[k].user_id === users[x].id) {
+                    sorterInner.push(schedules[j].schedules[k]); // Then push the schedule value into array
+                  }
+                }
+              }
+            }
+            // If the Date doesn't exist, place empty value in array
+            if (sorterInner && schedules[j].schedules.length == 0) {
+              sorterInner.push(undefined);
+            }
+          }
+        }
+      }
+      sorterOuter.push(sorterInner);
+      sorterInner = [];
+    }
+    return sorterOuter;
+  };
+  let scheduleData = scheduleSorter();
+
   const UserCell = ({ value }) => {
+    const fullName = `${value.first_name} ${value.last_name}`;
     return (
       <Chip
         onClick={() => handleClick(value)}
-        label={value}
+        className={classes.userCell}
+        label={fullName}
         avatar={
-          <Avatar>
-            <PersonIcon className={classes.icon} />
-          </Avatar>
+          value.avatar ? (
+            <Avatar src={value.avatar} />
+          ) : (
+            <Avatar>
+              <PersonIcon className={classes.icon} />
+            </Avatar>
+          )
         }
       />
+    );
+  };
+
+  const TimeCell = ({ value }) => {
+    return (
+      <div className={classes.timeCell}>
+        {value == undefined ? "" : `${value.start_hour} — ${value.end_hour}`}
+      </div>
     );
   };
 
@@ -133,12 +156,12 @@ const WeekSchedule = ({ days }) => {
     ));
   };
 
-  const BodyRow = ({ users, days }) => {
-    const columns = days.map((day) => format(day, "EEEE").toLowerCase());
-    columns.unshift("name");
-    return users
+  const BodyRow = ({ scheduleData }) => {
+    const columns = days.map((day) => format(day, "EEEE").toUpperCase());
+    columns.unshift("USER");
+    return scheduleData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-      .map((user, idx) => {
+      .map((data, idx) => {
         return (
           <TableRow
             hover
@@ -148,17 +171,16 @@ const WeekSchedule = ({ days }) => {
             className={classes.body}
           >
             {columns.map((column, idx) => {
-              const cellValue = user[column];
               return (
                 <TableCell
                   key={idx}
                   // BUGGY LISTENER NEEDS FIX
-                  onClick={() => console.log("clicked on", cellValue)}
+                  onClick={() => handleClick(data[idx])}
                 >
-                  {column === "name" ? (
-                    <UserCell value={cellValue} />
+                  {idx === 0 ? (
+                    <UserCell value={data[idx]} />
                   ) : (
-                    cellValue
+                    <TimeCell value={data[idx]} />
                   )}
                 </TableCell>
               );
@@ -178,7 +200,8 @@ const WeekSchedule = ({ days }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <BodyRow users={users} days={days} />
+            {/* THIS IS THE CORRECT PROPS */}
+            <BodyRow scheduleData={scheduleData} />
           </TableBody>
         </Table>
       </TableContainer>

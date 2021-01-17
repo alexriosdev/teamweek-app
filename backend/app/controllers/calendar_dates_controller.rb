@@ -14,6 +14,17 @@ class CalendarDatesController < ApplicationController
     )
   end
 
+  # Custom route to get all schedules from a date
+  def date_request
+    @calendar_date = CalendarDate.find_by(format_date: params[:format_date])
+    render json: @calendar_date.to_json(
+      include: [{ 
+        schedules:  { except: [:created_at, :updated_at] },
+      }],
+      except: [:created_at, :updated_at] 
+    )
+  end
+
   private
 
   def set_calendar_date
@@ -21,7 +32,11 @@ class CalendarDatesController < ApplicationController
   end
 
   def calendar_date_params
-    params.require(:calendar_date).permit(:full_date, :day_of_week, :month_name, :year)
+    params.require(:calendar_date).permit(:format_date)
   end
+  
+  # def calendar_date_params
+  #   params.require(:calendar_date).permit(:full_date, :day_of_week, :month_name, :year)
+  # end
   
 end

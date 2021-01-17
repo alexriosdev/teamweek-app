@@ -46,20 +46,41 @@ User.all.each{ |user|
     user_id: user.id
   )
 }
-  
-d1 = CalendarDate.create(
-  full_date: Date.today,
-  day_of_weeK: Date.today.strftime("%A"),
-  month_name: Date.today.strftime("%B"),
-  year: Date.today.strftime("%Y")
-)
+
+# start_date = Date.today
+# end_date = Date.today + 6
+
+start_date = Date.parse('2021-01-17') # YEAR-MONTH-DAY
+end_date = start_date + 6
+
+(start_date..end_date).each{ |date|
+  CalendarDate.create(format_date: date.strftime("%m/%d/%Y"))
+}
 
 User.all.each{ |user|
   Schedule.create(
-    calendar_date_id: d1.id,
+    calendar_date_id: CalendarDate.second.id,
     user_id: user.id,
-    start_hour: Time.now,
-    end_hour: (Time.now + 3600)
+    start_hour: Time.now.strftime("%I:%M %p"),
+    end_hour: (Time.now + 2.hours).strftime("%I:%M %p")    
+  )
+  Schedule.create(
+    calendar_date_id: CalendarDate.third.id,
+    user_id: user.id,
+    start_hour: Time.now.strftime("%I:%M %p"),
+    end_hour: (Time.now + 4.hours).strftime("%I:%M %p")    
+  )
+  Schedule.create(
+    calendar_date_id: CalendarDate.fourth.id,
+    user_id: user.id,
+    start_hour: Time.now.strftime("%I:%M %p"),
+    end_hour: (Time.now + 6.hours).strftime("%I:%M %p")    
+  )
+  Schedule.create(
+    calendar_date_id: CalendarDate.fifth.id,
+    user_id: user.id,
+    start_hour: Time.now.strftime("%I:%M %p"),
+    end_hour: (Time.now + 8.hours).strftime("%I:%M %p")    
   )
 }
 

@@ -19,8 +19,8 @@ const App = () => {
 
   return (
     <Router>
-      {console.log("Current User:", user)}
-      {console.log("Organization Members:", users)}
+      {/* {console.log("Current User:", user)}
+      {console.log("Organization Members:", users)} */}
       <Nav />
       {/* <NavDrawer /> */}
       <Switch>

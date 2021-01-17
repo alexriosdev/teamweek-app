@@ -13,10 +13,7 @@
 ActiveRecord::Schema.define(version: 2021_01_12_212010) do
 
   create_table "calendar_dates", force: :cascade do |t|
-    t.datetime "full_date"
-    t.string "day_of_weeK"
-    t.string "month_name"
-    t.string "year"
+    t.string "format_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -41,8 +38,8 @@ ActiveRecord::Schema.define(version: 2021_01_12_212010) do
   create_table "schedules", force: :cascade do |t|
     t.integer "calendar_date_id", null: false
     t.integer "user_id", null: false
-    t.time "start_hour"
-    t.time "end_hour"
+    t.string "start_hour"
+    t.string "end_hour"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["calendar_date_id"], name: "index_schedules_on_calendar_date_id"

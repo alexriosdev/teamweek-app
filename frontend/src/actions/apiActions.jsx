@@ -56,6 +56,23 @@ const fetchMembers = async (dispatch) => {
   dispatch({ type: "SET_USERS", users: data.users });
 };
 
+// Fetch schedules from a patricular date
+const fetchDateSchedule = async (dispatch, date) => {
+  const options = {
+    method: "POST",
+    body: JSON.stringify(date),
+    headers: {
+      "content-type": "application/json",
+      Accept: "application/json",
+    },
+  };
+  const response = await fetch(URL + "/date_request", options);
+  const data = await response.json();
+  data
+    ? dispatch({ type: "SET_SCHEDULES", schedules: data })
+    : console.log("Data is null");
+};
+
 // // Previous Method to Fetch Users
 // const fetchUsers = async (dispatch) => {
 //   await fetch("http://localhost:3000/users")
@@ -66,4 +83,4 @@ const fetchMembers = async (dispatch) => {
 //     .catch((error) => console.log(error));
 // };
 
-export { userLogin, userSignup, fetchUsers, fetchMembers };
+export { userLogin, userSignup, fetchUsers, fetchMembers, fetchDateSchedule };

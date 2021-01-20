@@ -13,6 +13,7 @@ import {
   endOfWeek,
 } from "date-fns";
 import WeekSchedule from "./WeekSchedule";
+import ScheduleTable from "./ScheduleTable";
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -63,7 +64,7 @@ const ScheduleContainer = () => {
     setDays(currentWeek);
   };
 
-  const DateControll = ({ startDay, endDay }) => {
+  const DateControl = ({ startDay, endDay }) => {
     return (
       <>
         <IconButton onClick={() => handleCurrent()}>
@@ -90,8 +91,9 @@ const ScheduleContainer = () => {
     <div className={classes.content}>
       <Container className={classes.container}>
         <Typography variant="h4">Week Schedule</Typography>
-        <DateControll startDay={days[0]} endDay={days[days.length - 1]} />
+        <DateControl startDay={days[0]} endDay={days[days.length - 1]} />
         <WeekSchedule days={days} />
+        {/* <ScheduleTable days={days} /> */}
       </Container>
     </div>
   );

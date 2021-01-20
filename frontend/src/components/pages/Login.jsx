@@ -13,7 +13,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { userLogin } from "../actions/apiActions";
+import Nav from "../navbar/Nav";
+import { userLogin } from "../../actions/apiActions";
 
 const Copyright = () => {
   return (
@@ -77,74 +78,77 @@ const Login = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Log in
-        </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            onChange={handleChange}
-            value={user.email}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            name="email"
-            label="Email Address"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            onChange={handleChange}
-            value={user.password}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          {/* <FormControlLabel
+    <>
+      <Nav />
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Log in
+          </Typography>
+          <form className={classes.form} noValidate>
+            <TextField
+              onChange={handleChange}
+              value={user.email}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              name="email"
+              label="Email Address"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              onChange={handleChange}
+              value={user.password}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            {/* <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           /> */}
-          <Button
-            onClick={handleSubmit}
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            className={classes.submit}
-          >
-            Log In
-          </Button>
-          <Grid container>
-            {/* <Grid item xs>
+            <Button
+              onClick={handleSubmit}
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              className={classes.submit}
+            >
+              Log In
+            </Button>
+            <Grid container>
+              {/* <Grid item xs>
               <Link href="#" variant="body2">
                 Forgot password?
               </Link>
             </Grid> */}
-            <Grid item>
-              <Link to="/signup" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
+              <Grid item>
+                <Link to="/signup" variant="body2">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
+          </form>
+        </div>
+        <Box mt={8}>
+          <Copyright />
+        </Box>
+      </Container>
+    </>
   );
 };
 

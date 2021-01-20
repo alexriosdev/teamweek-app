@@ -10,7 +10,7 @@ import { blueTheme, redTheme, pinkTheme } from "./theme";
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={pinkTheme}>
+    <ThemeProvider theme={blueTheme}>
       <Provider store={store}>
         <App />
       </Provider>

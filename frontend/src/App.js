@@ -1,16 +1,17 @@
-import "./App.css";
+// import "./App.css";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from "react-router-dom";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
-import Nav from "./components/navbar/Nav";
-import NavDrawer from "./components/navbar/NavDrawer";
+import Login from "./components/pages/Login";
+import Signup from "./components/pages/Signup";
 import WeekSchedule from "./components/schedule/WeekSchedule";
 import ScheduleContainer from "./components/schedule/ScheduleContainer";
+import Dashboard from "./components/pages/Dashboard";
+import Landing from "./components/pages/Landing";
+import isLoggedIn from "./components/auth/isLoggedIn";
 import { useSelector } from "react-redux";
 
 const App = () => {
@@ -19,15 +20,15 @@ const App = () => {
 
   return (
     <Router>
-      {/* {console.log("Current User:", user)}
-      {console.log("Organization Members:", users)} */}
-      <Nav />
-      {/* <NavDrawer /> */}
+      {/* {console.log("Current User:", user)} */}
+      {/* {console.log("Organization Members:", users)} */}
       <Switch>
+        <Route exact path="/" component={Landing} />
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
-        <Route exact path="/">
-          <ScheduleContainer />
+        <Route path="/dashboard" component={Dashboard} />
+        <Route>
+          {isLoggedIn() ? <Redirect to="/dashboard" /> : <Redirect to="/" />}
         </Route>
       </Switch>
     </Router>

@@ -14,7 +14,13 @@ import { Button, Container, Typography } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDateSchedule, fetchMembers } from "../../actions/apiActions";
+import {
+  fetchDateSchedule,
+  fetchMembers,
+  updateSchedule,
+  createSchedule,
+} from "../../actions/apiActions";
+import ChangeSchedule from "../dialogs/ChangeSchedule";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,14 +56,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const handleClick = (value) => {
-  console.log("Value: ", value);
-};
-
 const WeekSchedule = ({ days }) => {
   const classes = useStyles();
   const users = useSelector((state) => state.userState.users);
   const schedules = useSelector((state) => state.scheduleState.schedules);
+
+  const [active, setActive] = React.useState(false);
+  const [value, setValue] = React.useState("");
+
+  const closeDialog = () => {
+    setActive(false);
+  };
+
+  const handleClick = (value) => {
+    setValue(value);
+    setActive(true);
+    // return ChangeSchedule;
+    // DETERMINES IF DATE MATCHES
+    // const result = schedules.find((schedule) => schedule.format_date === date);
+
+    // createSchedule(result, value);
+    // updateSchedule(value);
+
+    // If date corresponds to the stored dates, then:
+    // if value is empty, make a post (create schedule)
+    // if value exists, make a patch (update schedule)
+
+    // If date doesn't exist:
+    // Create Date and Create Schedule
+  };
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -81,6 +108,7 @@ const WeekSchedule = ({ days }) => {
   };
 
   const columns = days.map((day) => format(day, "P"));
+  let numbers = [0, 1, 2, 3, 4, 5];
 
   // WORKING FUNCTION✅
   const scheduleSorter = () => {
@@ -117,6 +145,7 @@ const WeekSchedule = ({ days }) => {
     return sorterOuter;
   };
   let scheduleData = scheduleSorter();
+  // console.log(scheduleData);
 
   const UserCell = ({ value }) => {
     const fullName = `${value.first_name} ${value.last_name}`;
@@ -157,7 +186,7 @@ const WeekSchedule = ({ days }) => {
   };
 
   const BodyRow = ({ scheduleData }) => {
-    const columns = days.map((day) => format(day, "EEEE").toUpperCase());
+    const columns = days.map((day) => format(day, "P").toUpperCase());
     columns.unshift("USER");
     return scheduleData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -175,7 +204,9 @@ const WeekSchedule = ({ days }) => {
                 <TableCell
                   key={idx}
                   // BUGGY LISTENER NEEDS FIX
-                  onClick={() => handleClick(data[idx])}
+                  onClick={
+                    idx === 0 ? () => null : () => handleClick(data[idx])
+                  }
                 >
                   {idx === 0 ? (
                     <UserCell value={data[idx]} />
@@ -214,6 +245,7 @@ const WeekSchedule = ({ days }) => {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
+      {active ? <ChangeSchedule close={closeDialog} data={value} /> : null}
     </Paper>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
@@ -10,16 +10,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import { Button, Container, Typography } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 import { format } from "date-fns";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchDateSchedule,
-  fetchMembers,
-  updateSchedule,
-  createSchedule,
-} from "../../actions/apiActions";
 import ChangeSchedule from "../dialogs/ChangeSchedule";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,16 +48,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WeekSchedule = ({ days }) => {
+const WeekSchedule = ({ days, schedules }) => {
   const classes = useStyles();
-  const users = useSelector((state) => state.userState.users);
-  const schedules = useSelector((state) => state.scheduleState.schedules);
 
   const [active, setActive] = React.useState(false);
   const [value, setValue] = React.useState("");
 
   const closeDialog = () => {
     setActive(false);
+  };
+
+  const handleEmployee = (user) => {
+    alert("CLICKED ON EMPLOYEE:", user);
   };
 
   const handleClick = (value) => {
@@ -86,15 +80,6 @@ const WeekSchedule = ({ days }) => {
     // Create Date and Create Schedule
   };
 
-  const dispatch = useDispatch();
-  useEffect(() => {
-    fetchMembers(dispatch);
-    for (let i = 0; i < days.length; i++) {
-      let date = format(days[i], "P");
-      fetchDateSchedule(dispatch, { format_date: date });
-    }
-  }, [days]);
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -107,56 +92,17 @@ const WeekSchedule = ({ days }) => {
     setPage(0);
   };
 
-  const columns = days.map((day) => format(day, "P"));
-  let numbers = [0, 1, 2, 3, 4, 5];
-
-  // WORKING FUNCTION✅
-  const scheduleSorter = () => {
-    let sorterInner = [];
-    let sorterOuter = [];
-    for (let x = 0; x < users.length; x++) {
-      if (!sorterInner.includes(users[x])) {
-        sorterInner.push(users[x]); // First push the User, if it's not in the array
-      }
-      for (let i = 0; i < columns.length; i++) {
-        for (let j = 0; j < schedules.length; j++) {
-          if (columns[i] === schedules[j].format_date) {
-            // If the Date exists, continue
-            if (schedules[j].schedules) {
-              for (let k = 0; k < schedules[j].schedules.length; k++) {
-                if (schedules[j].schedules[k]) {
-                  // If the schedule exists, continue
-                  if (schedules[j].schedules[k].user_id === users[x].id) {
-                    sorterInner.push(schedules[j].schedules[k]); // Then push the schedule value into array
-                  }
-                }
-              }
-            }
-            // If the Date doesn't exist, place empty value in array
-            if (sorterInner && schedules[j].schedules.length == 0) {
-              sorterInner.push(undefined);
-            }
-          }
-        }
-      }
-      sorterOuter.push(sorterInner);
-      sorterInner = [];
-    }
-    return sorterOuter;
-  };
-  let scheduleData = scheduleSorter();
-  // console.log(scheduleData);
-
-  const UserCell = ({ value }) => {
-    const fullName = `${value.first_name} ${value.last_name}`;
+  const EmployeeCell = ({ user }) => {
+    console.log(user);
+    const fullName = `${user.first_name} ${user.last_name}`;
     return (
       <Chip
-        onClick={() => handleClick(value)}
+        onClick={() => handleEmployee(user)}
         className={classes.userCell}
         label={fullName}
         avatar={
-          value.avatar ? (
-            <Avatar src={value.avatar} />
+          user.avatar ? (
+            <Avatar src={user.avatar} />
           ) : (
             <Avatar>
               <PersonIcon className={classes.icon} />
@@ -167,15 +113,26 @@ const WeekSchedule = ({ days }) => {
     );
   };
 
-  const TimeCell = ({ value }) => {
-    return (
-      <div className={classes.timeCell}>
-        {value == undefined ? "" : `${value.start_hour} — ${value.end_hour}`}
-      </div>
-    );
+  const TimeCell = ({ day }) => {
+    if (day) {
+      return (
+        <TableCell
+          onClick={() => handleClick(day)}
+          className={classes.timeCell}
+        >
+          {day == undefined ? "" : `${day.start_hour} — ${day.end_hour}`}
+        </TableCell>
+      );
+    } else {
+      return (
+        <TableCell align="center" style={{ background: "gray" }}>
+          OFF
+        </TableCell>
+      );
+    }
   };
 
-  const HeaderRow = ({ days }) => {
+  const HeaderRow = () => {
     const columns = days.map((day) => format(day, "dd EEE"));
     columns.unshift("Name");
     return columns.map((column, idx) => (
@@ -185,37 +142,24 @@ const WeekSchedule = ({ days }) => {
     ));
   };
 
-  const BodyRow = ({ scheduleData }) => {
-    const columns = days.map((day) => format(day, "P").toUpperCase());
-    columns.unshift("USER");
-    return scheduleData
+  const BodyRow = () => {
+    return schedules
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-      .map((data, idx) => {
+      .map((e, r_idx) => {
         return (
           <TableRow
             hover
             role="checkbox"
             tabIndex={-1}
-            key={idx}
+            key={r_idx}
             className={classes.body}
           >
-            {columns.map((column, idx) => {
-              return (
-                <TableCell
-                  key={idx}
-                  // BUGGY LISTENER NEEDS FIX
-                  onClick={
-                    idx === 0 ? () => null : () => handleClick(data[idx])
-                  }
-                >
-                  {idx === 0 ? (
-                    <UserCell value={data[idx]} />
-                  ) : (
-                    <TimeCell value={data[idx]} />
-                  )}
-                </TableCell>
-              );
-            })}
+            <TableCell>
+              <EmployeeCell user={e.user} />
+            </TableCell>
+            {e.schedules.map((day, c_idx) => (
+              <TimeCell day={day} key={c_idx} />
+            ))}
           </TableRow>
         );
       });
@@ -227,19 +171,18 @@ const WeekSchedule = ({ days }) => {
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
-              <HeaderRow days={days} />
+              <HeaderRow />
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* THIS IS THE CORRECT PROPS */}
-            <BodyRow scheduleData={scheduleData} />
+            <BodyRow />
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={users.length}
+        count={schedules.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}

@@ -1,4 +1,4 @@
 class Schedule < ApplicationRecord
-  belongs_to :calendar_date
-  belongs_to :user
+  belongs_to :employee
+  belongs_to :work_week
 end

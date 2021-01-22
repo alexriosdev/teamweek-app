@@ -3,7 +3,7 @@ import MaterialTable from "material-table";
 import Avatar from "@material-ui/core/Avatar";
 import { useTheme } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMembers } from "../../actions/apiActions";
+import { fetchEmployees } from "../../actions/apiActions";
 
 const MembersTable = () => {
   const users = useSelector((state) => state.userState.users);
@@ -11,7 +11,7 @@ const MembersTable = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    fetchMembers(dispatch);
+    fetchEmployees(dispatch);
   }, []);
 
   const columns = [

@@ -10,40 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_12_212010) do
+ActiveRecord::Schema.define(version: 2021_01_21_171435) do
 
-  create_table "calendar_dates", force: :cascade do |t|
-    t.string "format_date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "memberships", force: :cascade do |t|
+  create_table "employees", force: :cascade do |t|
     t.integer "organization_id", null: false
     t.integer "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["organization_id"], name: "index_memberships_on_organization_id"
-    t.index ["user_id"], name: "index_memberships_on_user_id"
+    t.index ["organization_id"], name: "index_employees_on_organization_id"
+    t.index ["user_id"], name: "index_employees_on_user_id"
   end
 
   create_table "organizations", force: :cascade do |t|
-    t.integer "user_id", null: false
     t.string "name"
+    t.integer "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_organizations_on_user_id"
   end
 
   create_table "schedules", force: :cascade do |t|
-    t.integer "calendar_date_id", null: false
-    t.integer "user_id", null: false
+    t.integer "employee_id", null: false
+    t.integer "work_week_id", null: false
+    t.string "date"
     t.string "start_hour"
     t.string "end_hour"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["calendar_date_id"], name: "index_schedules_on_calendar_date_id"
-    t.index ["user_id"], name: "index_schedules_on_user_id"
+    t.index ["employee_id"], name: "index_schedules_on_employee_id"
+    t.index ["work_week_id"], name: "index_schedules_on_work_week_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -52,15 +47,32 @@ ActiveRecord::Schema.define(version: 2021_01_12_212010) do
     t.string "password_digest"
     t.string "first_name"
     t.string "last_name"
-    t.string "phone_number"
     t.string "avatar"
+    t.string "phone_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  add_foreign_key "memberships", "organizations"
-  add_foreign_key "memberships", "users"
+  create_table "weeks", force: :cascade do |t|
+    t.string "full_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "work_weeks", force: :cascade do |t|
+    t.integer "organization_id", null: false
+    t.integer "week_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["organization_id"], name: "index_work_weeks_on_organization_id"
+    t.index ["week_id"], name: "index_work_weeks_on_week_id"
+  end
+
+  add_foreign_key "employees", "organizations"
+  add_foreign_key "employees", "users"
   add_foreign_key "organizations", "users"
-  add_foreign_key "schedules", "calendar_dates"
-  add_foreign_key "schedules", "users"
+  add_foreign_key "schedules", "employees"
+  add_foreign_key "schedules", "work_weeks"
+  add_foreign_key "work_weeks", "organizations"
+  add_foreign_key "work_weeks", "weeks"
 end

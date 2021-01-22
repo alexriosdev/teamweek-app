@@ -1,6 +1,5 @@
 class Organization < ApplicationRecord
-  has_many :memberships
-  has_many :users, through: :memberships
-  
   belongs_to :user
+  has_many :employees
+  has_many :users, through: :employees
 end

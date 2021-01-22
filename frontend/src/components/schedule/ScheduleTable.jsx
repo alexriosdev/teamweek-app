@@ -3,70 +3,82 @@ import MaterialTable from "material-table";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import { useTheme } from "@material-ui/core/styles";
-import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
-import {
-  fetchDateSchedule,
-  fetchMembers,
-  updateSchedule,
-  createSchedule,
-} from "../../actions/apiActions";
 
-// SCHEDULE USING THE MATERIALTABLE
+// SCHEDULE USING MATERIAL-TABLE
 
-const ScheduleTable = ({ days }) => {
-  const users = useSelector((state) => state.userState.users);
-  const schedules = useSelector((state) => state.scheduleState.schedules);
+const ScheduleTable = ({ days, schedules }) => {
+  const [scheduleData, setScheduleData] = useState([]);
 
-  const dispatch = useDispatch();
   useEffect(() => {
-    fetchMembers(dispatch);
-    for (let i = 0; i < days.length; i++) {
-      let date = format(days[i], "P");
-      fetchDateSchedule(dispatch, { format_date: date });
-    }
-  }, []);
-
-  const createField = (date) => {
-    return {
-      title: format(date, "dd EEE"),
-      field: format(date, "EEE").toLowerCase(),
-    };
-  };
-
-  const UserCard = (data) => {
-    const fullName = `${data.user.first_name} ${data.user.last_name}`;
-    return (
-      <Chip
-        onClick={() => alert("HLLO")}
-        label={fullName}
-        avatar={data.user.avatar ? <Avatar src={data.user.avatar} /> : false}
-      />
-    );
-  };
-
-  const userField = {
-    title: "Name",
-    field: "user",
-    render: ({ user }) => {
-      return <UserCard user={user} />;
-    },
-  };
-
-  const columns = days.map((day) => createField(day));
-  columns.unshift(userField);
+    const initialData = schedules.map((e) => {
+      return createRow(
+        `${e.user.first_name} ${e.user.last_name}`,
+        `${e.schedules[0].start_hour} - ${e.schedules[0].end_hour}`,
+        `${e.schedules[1].start_hour} - ${e.schedules[1].end_hour}`,
+        `${e.schedules[2].start_hour} - ${e.schedules[2].end_hour}`,
+        `${e.schedules[3].start_hour} - ${e.schedules[3].end_hour}`,
+        `${e.schedules[4].start_hour} - ${e.schedules[4].end_hour}`,
+        `${e.schedules[5].start_hour} - ${e.schedules[5].end_hour}`,
+        `${e.schedules[6].start_hour} - ${e.schedules[6].end_hour}`
+      );
+    });
+    setScheduleData(initialData);
+  }, [schedules]);
 
   const createRow = (user, sun, mon, tue, wed, thu, fri, sat) => {
     return { user, sun, mon, tue, wed, thu, fri, sat };
   };
 
-  const time = {
-    start_hour: "10",
-    end_hour: "10:50PM",
+  const createField = (date) => {
+    const d_key = format(date, "EEE").toLowerCase();
+    return {
+      title: format(date, "dd EEE"),
+      field: d_key,
+      // render: (data) => {
+      //   return <TimeCell day={data[d_key]} />;
+      // },
+    };
   };
 
-  const hour = `${time.start_hour} - ${time.end_hour}`;
+  const userField = {
+    title: "Name",
+    field: "user",
+    // render: ({ user }) => {
+    //   return <UserCell user={user} />;
+    // },
+  };
 
+  const columns = days.map((day) => createField(day));
+  columns.unshift(userField);
+
+  const UserCell = ({ user }) => {
+    const fullName = `${user.first_name} ${user.last_name}`;
+    return (
+      <Chip
+        onClick={() => alert("CLICKED ON EMPLOYEE")}
+        label={fullName}
+        avatar={user.avatar ? <Avatar src={user.avatar} /> : false}
+      />
+    );
+  };
+
+  const TimeCell = ({ day }) => {
+    if (day) {
+      return `${day.start_hour} — ${day.end_hour}`;
+    } else {
+      return (
+        <div align="center" style={{ background: "gray" }}>
+          OFF
+        </div>
+      );
+    }
+  };
+
+  // Sample Data
+  const users = [1, 2, 2];
+  const time = { start_hour: "10", end_hour: "10:50PM" };
+  const hour = `${time.start_hour} - ${time.end_hour}`;
   const dataInput = users.map((user) => {
     return createRow(user, hour, hour, hour, hour, hour, hour, hour);
   });
@@ -80,16 +92,16 @@ const ScheduleTable = ({ days }) => {
     },
   };
 
-  const date = `${format(days[0], "MMMM dd")} — ${format(
+  const title = `${format(days[0], "MMMM dd")} — ${format(
     days[days.length - 1],
     "dd, yyyy"
   )}`;
 
   return (
     <MaterialTable
-      title={date}
+      title={title}
       columns={columns}
-      data={dataInput}
+      data={scheduleData}
       options={options}
     />
   );

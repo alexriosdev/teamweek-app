@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, IconButton, Typography } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
@@ -14,6 +15,7 @@ import {
 } from "date-fns";
 import WeekSchedule from "./WeekSchedule";
 import ScheduleTable from "./ScheduleTable";
+import { fetchWorkWeek } from "../../actions/apiActions";
 
 const useStyles = makeStyles((theme) => ({
   head: {
@@ -46,7 +48,14 @@ const WeekPrinter = (date) => {
 const ScheduleContainer = () => {
   const classes = useStyles();
   const currentWeek = WeekPrinter(new Date());
+
   const [days, setDays] = useState(currentWeek);
+  const schedules = useSelector((state) => state.scheduleState.schedules);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    fetchWorkWeek(dispatch, { full_date: format(days[0], "P") });
+  }, []);
 
   const handleForward = () => {
     const nextDay = addDays(days[days.length - 1], 1);
@@ -92,8 +101,8 @@ const ScheduleContainer = () => {
       <Container className={classes.container}>
         <Typography variant="h4">Week Schedule</Typography>
         <DateControl startDay={days[0]} endDay={days[days.length - 1]} />
-        <WeekSchedule days={days} />
-        {/* <ScheduleTable days={days} /> */}
+        {/* <WeekSchedule days={days} schedules={schedules} /> */}
+        <ScheduleTable days={days} schedules={schedules} />
       </Container>
     </div>
   );

@@ -58,7 +58,7 @@ const fetchUsers = async (dispatch) => {
 };
 
 // Fetch users from a particular organization
-const fetchMembers = async (dispatch) => {
+const fetchEmployees = async (dispatch) => {
   const response = await fetch(URL + "/organizations/1"); //
   const data = await response.json();
   const organization = {
@@ -89,13 +89,14 @@ const createMember = async (dispatch, user, organization) => {
   dispatch({ type: "UPDATE_USERS", user: userObj });
 };
 
-// Fetch schedules from a patricular date
-const fetchDateSchedule = async (dispatch, date) => {
-  const response = await fetch(URL + "/date_request", methodPost(date));
+// Fetches the Working Schedule for a particular Week
+const fetchWorkWeek = async (dispatch, date) => {
+  const response = await fetch(URL + "/week_request", methodPost(date));
   const data = await response.json();
-  data
-    ? dispatch({ type: "SET_SCHEDULES", schedules: data })
-    : console.log("Data is null");
+  // console.log(data.week_schedule);
+  data.week_schedule
+    ? dispatch({ type: "SET_SCHEDULES", schedules: data.week_schedule })
+    : console.log("Unable to fetch Week Schedule");
 };
 
 // Create a Schedule
@@ -135,8 +136,8 @@ export {
   userLogin,
   userSignup,
   fetchUsers,
-  fetchMembers,
-  fetchDateSchedule,
+  fetchEmployees,
+  fetchWorkWeek,
   createMember,
   createSchedule,
   updateSchedule,

@@ -8,17 +8,9 @@ const initialState = {
 const scheduleReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_SCHEDULES":
-      // Returns only unique values
-      const values = [...state.schedules, action.schedules];
-      const uniqueValues = Array.from(new Set(values.map((v) => v.id))).map(
-        (id) => {
-          return values.find((v) => v.id === id);
-        }
-      );
       return {
         ...state,
-        // schedules: [...state.schedules, action.schedules],
-        schedules: uniqueValues,
+        schedules: action.schedules,
       };
     case "SET_CURRENT_SCHEDULE":
       return {

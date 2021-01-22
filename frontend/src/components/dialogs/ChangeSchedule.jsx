@@ -14,10 +14,10 @@ import DateFnsUtils from "@date-io/date-fns";
 import { format } from "date-fns";
 import { updateSchedule } from "../../actions/apiActions";
 
-const ChangeSchedule = ({ close, data }) => {
+const ChangeSchedule = ({ close, data, setEditData }) => {
   const [start, setStart] = React.useState(new Date());
   const [end, setEnd] = React.useState(new Date());
-  console.log(data);
+  // console.log(data);
 
   const updateData = (start, end) => {
     return (data = {
@@ -29,6 +29,7 @@ const ChangeSchedule = ({ close, data }) => {
 
   const handleSave = () => {
     updateData(start, end);
+    // setEditData(data); // From TESTING NEW TABLE
     updateSchedule(data);
     close();
   };

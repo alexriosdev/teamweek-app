@@ -15,18 +15,20 @@ import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
 import Nav from "../navbar/Nav";
 
-function Copyright() {
+const Copyright = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{" "}
+      {" © "}
+      <a
+        style={{ textDecoration: "none" }}
+        href="https://github.com/alexriosdev"
+      >
+        alexriosdev
+      </a>{" "}
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
-}
+};
 
 const useStyles = makeStyles((theme) => ({
   heroContent: {
@@ -132,7 +134,7 @@ const Landing = () => {
       </main>
       {/* Footer */}
       <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
+        {/* <Typography variant="h6" align="center" gutterBottom>
           Footer
         </Typography>
         <Typography
@@ -142,7 +144,7 @@ const Landing = () => {
           component="p"
         >
           Something here to give the footer a purpose!
-        </Typography>
+        </Typography> */}
         <Copyright />
       </footer>
       {/* End footer */}

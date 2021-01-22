@@ -1,4 +1,3 @@
-// import "./App.css";
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,8 +6,6 @@ import {
 } from "react-router-dom";
 import Login from "./components/pages/Login";
 import Signup from "./components/pages/Signup";
-import WeekSchedule from "./components/schedule/WeekSchedule";
-import ScheduleContainer from "./components/schedule/ScheduleContainer";
 import Dashboard from "./components/pages/Dashboard";
 import Landing from "./components/pages/Landing";
 import isLoggedIn from "./components/auth/isLoggedIn";

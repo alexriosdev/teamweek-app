@@ -1,3 +1,4 @@
+import auth from "../components/auth/auth";
 const URL = "http://localhost:3000";
 
 // Helper POST Method
@@ -31,7 +32,9 @@ const userLogin = async (dispatch, user, history) => {
   if (data.hasOwnProperty("auth_key")) {
     localStorage.setItem("token", data.auth_key);
     dispatch({ type: "SET_CURRENT_USER", user: data });
-    history.push("/dashboard");
+    auth.login(() => {
+      history.push("/dashboard");
+    });
   } else {
     alert(data.error);
   }
@@ -44,7 +47,10 @@ const userSignup = async (dispatch, user, history) => {
   if (data.hasOwnProperty("auth_key")) {
     localStorage.setItem("token", data.auth_key);
     dispatch({ type: "SET_CURRENT_USER", user: data });
-    history.push("/dashboard");
+    auth.login(() => {
+      history.push("/dashboard");
+    });
+    // history.push("/dashboard");
   } else {
     alert(data.error);
   }

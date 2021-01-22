@@ -68,7 +68,6 @@ const Login = () => {
   const clearState = () => {
     setUser({ ...initialState });
   };
-
   const history = useHistory();
   const dispatch = useDispatch();
   const handleSubmit = (event) => {

@@ -101,8 +101,8 @@ const ScheduleContainer = () => {
       <Container className={classes.container}>
         <Typography variant="h4">Week Schedule</Typography>
         <DateControl startDay={days[0]} endDay={days[days.length - 1]} />
-        {/* <WeekSchedule days={days} schedules={schedules} /> */}
-        <ScheduleTable days={days} schedules={schedules} />
+        <WeekSchedule days={days} schedules={schedules} />
+        {/* <ScheduleTable days={days} schedules={schedules} /> */}
       </Container>
     </div>
   );

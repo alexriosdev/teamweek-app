@@ -4,8 +4,9 @@ class CreateSchedules < ActiveRecord::Migration[6.0]
       t.references :employee, null: false, foreign_key: true
       t.references :work_week, null: false, foreign_key: true
       t.string :date
-      t.string :start_hour
-      t.string :end_hour
+      t.boolean :is_available
+      t.string :start_time
+      t.string :end_time
 
       t.timestamps
     end

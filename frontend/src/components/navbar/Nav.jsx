@@ -32,8 +32,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1, 1.5),
   },
   button: {
-    color: "white",
-    backgroundColor: theme.palette.primary.main,
+    "&:hover": {
+      background: "white",
+      color: theme.palette.custom.dark,
+    },
   },
 }));
 
@@ -57,10 +59,16 @@ const Nav = () => {
             </Typography>
           </Link>
           <Link to="/login" className={classes.link}>
-            LOG IN
+            <Button
+              variant="outlined"
+              color="inherit"
+              className={classes.button}
+            >
+              Log In
+            </Button>
           </Link>
-          <Link to="/signup" className={classes.link}>
-            <Button variant="outlined" className={classes.button}>
+          <Link to="/signup">
+            <Button variant="contained" color="primary">
               Sign up
             </Button>
           </Link>

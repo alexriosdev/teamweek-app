@@ -75,8 +75,8 @@ const fetchEmployees = async (dispatch) => {
   dispatch({ type: "SET_ORGANIZATION", organization: organization });
 };
 
-// Create a Member
-const createMember = async (dispatch, user, organization) => {
+// Create an Employee
+const createEmployee = async (dispatch, user, organization) => {
   console.log("SENT DATA", user);
   const userObj = await fetch(URL + "/users", methodPost(user)).then((res) =>
     res.json()
@@ -88,7 +88,7 @@ const createMember = async (dispatch, user, organization) => {
   };
   console.log("FORMATED DATA", data);
 
-  let memObj = await fetch(URL + "/memberships", methodPost(data)).then((res) =>
+  let eObj = await fetch(URL + "/employees", methodPost(data)).then((res) =>
     res.json()
   );
 
@@ -110,8 +110,9 @@ const createSchedule = async (date, schedule) => {
   schedule = {
     user_id: 3,
     calendar_date_id: date.id,
-    start_hour: "TESTING",
-    end_hour: "POST",
+    is_available: true,
+    start_time: "TESTING",
+    end_time: "POST",
   };
   console.log(schedule);
   const response = await fetch(`${URL}/schedules`, methodPost(schedule));
@@ -144,7 +145,7 @@ export {
   fetchUsers,
   fetchEmployees,
   fetchWorkWeek,
-  createMember,
+  createEmployee,
   createSchedule,
   updateSchedule,
 };

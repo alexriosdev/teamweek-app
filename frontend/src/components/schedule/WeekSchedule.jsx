@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
@@ -46,24 +46,38 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "0.6rem",
     fontWeight: 700,
   },
+  offCell: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.primary.contrastText,
+    fontSize: "0.6rem",
+    fontWeight: 700,
+  },
 }));
 
 const WeekSchedule = ({ days, schedules }) => {
   const classes = useStyles();
 
-  const [active, setActive] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [scheduleData, setScheduleData] = useState(schedules);
+
+  useEffect(() => {
+    setScheduleData(schedules);
+  }, [schedules]);
+
+  const [active, setActive] = useState(false);
+  const [shift, setShift] = useState({});
+  const [position, setPosition] = useState({});
 
   const closeDialog = () => {
     setActive(false);
   };
 
   const handleEmployee = (user) => {
-    alert("CLICKED ON EMPLOYEE:", user);
+    alert("CLICKED ON EMPLOYEE:", user.first_name);
   };
 
-  const handleClick = (value) => {
-    setValue(value);
+  const handleClick = (value, i, j) => {
+    setShift(value);
+    setPosition({ i: i, j: j });
     setActive(true);
     // return ChangeSchedule;
     // DETERMINES IF DATE MATCHES
@@ -80,8 +94,8 @@ const WeekSchedule = ({ days, schedules }) => {
     // Create Date and Create Schedule
   };
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -93,7 +107,6 @@ const WeekSchedule = ({ days, schedules }) => {
   };
 
   const EmployeeCell = ({ user }) => {
-    console.log(user);
     const fullName = `${user.first_name} ${user.last_name}`;
     return (
       <Chip
@@ -113,20 +126,24 @@ const WeekSchedule = ({ days, schedules }) => {
     );
   };
 
-  const TimeCell = ({ day }) => {
-    if (day) {
+  const TimeCell = ({ shift, i, j }) => {
+    if (shift.is_available) {
       return (
         <TableCell
-          onClick={() => handleClick(day)}
+          onClick={() => handleClick(shift, i, j)}
           className={classes.timeCell}
         >
-          {day == undefined ? "" : `${day.start_hour} — ${day.end_hour}`}
+          {shift.start_time ? `${shift.start_time} — ${shift.end_time}` : ""}
         </TableCell>
       );
     } else {
       return (
-        <TableCell align="center" style={{ background: "gray" }}>
-          OFF
+        <TableCell
+          onClick={() => handleClick(shift, i, j)}
+          align="center"
+          className={classes.timeCell}
+        >
+          {""}
         </TableCell>
       );
     }
@@ -143,22 +160,23 @@ const WeekSchedule = ({ days, schedules }) => {
   };
 
   const BodyRow = () => {
-    return schedules
+    // return schedules
+    return scheduleData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-      .map((e, r_idx) => {
+      .map((e, i) => {
         return (
           <TableRow
             hover
             role="checkbox"
             tabIndex={-1}
-            key={r_idx}
+            key={i}
             className={classes.body}
           >
             <TableCell>
               <EmployeeCell user={e.user} />
             </TableCell>
-            {e.schedules.map((day, c_idx) => (
-              <TimeCell day={day} key={c_idx} />
+            {e.schedules.map((shift, j) => (
+              <TimeCell key={j} shift={shift} i={i} j={j} />
             ))}
           </TableRow>
         );
@@ -182,13 +200,23 @@ const WeekSchedule = ({ days, schedules }) => {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={schedules.length}
+        // count={schedules.length}
+        count={scheduleData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
-      {active ? <ChangeSchedule close={closeDialog} data={value} /> : null}
+      {active ? (
+        <ChangeSchedule
+          close={closeDialog}
+          shift={shift}
+          // setShift={setShift}
+          position={position}
+          scheduleData={scheduleData}
+          setScheduleData={setScheduleData}
+        />
+      ) : null}
     </Paper>
   );
 };

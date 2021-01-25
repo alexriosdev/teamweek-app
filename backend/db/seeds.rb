@@ -43,8 +43,8 @@ end
 o1 = Organization.create(name: 'Winterfell', user_id: u1.id)
 
 # Create Week
-week_1 = Date.parse('2021-01-17') # YEAR-MONTH-DAY
-week_2 = Date.parse('2021-01-24') # YEAR-MONTH-DAY
+week_1 = Date.parse('2021-01-24') # YEAR-MONTH-DAY
+week_2 = Date.parse('2021-01-31') # YEAR-MONTH-DAY
 
 Week.create(full_date: week_1.strftime('%m/%d/%Y'))
 
@@ -63,9 +63,10 @@ Employee.all.each do |e|
     Schedule.create(
       employee_id: e.id,
       work_week_id: WorkWeek.first.id,
+      is_available: true,
       date: (week_1 + d).strftime('%m/%d/%Y'),
-      start_hour: Time.now.strftime('%I:%M %p'),
-      end_hour: (Time.now + 2.hours).strftime('%I:%M %p')
+      # start_time: Time.now.strftime('%I:%M %p'),
+      # end_time: (Time.now + 2.hours).strftime('%I:%M %p')
     )
   end
 end

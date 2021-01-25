@@ -26,7 +26,7 @@ const PrimaryDrawer = ({ handleActive }) => {
         </ListItemIcon>
         <ListItemText primary="Organizations" />
       </ListItem>
-      <ListItem button onClick={() => handleActive("displayMembers")}>
+      <ListItem button onClick={() => handleActive("displayEmployees")}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>

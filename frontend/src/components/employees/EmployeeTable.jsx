@@ -5,7 +5,7 @@ import { useTheme } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEmployees } from "../../actions/apiActions";
 
-const MembersTable = () => {
+const EmployeeTable = () => {
   const users = useSelector((state) => state.userState.users);
   const organization = useSelector((state) => state.userState.organization);
 
@@ -47,7 +47,7 @@ const MembersTable = () => {
 
   return (
     <MaterialTable
-      title={`${organization.name} Members`}
+      title={`${organization.name} Employees`}
       columns={columns}
       data={dataInput}
       options={options}
@@ -55,4 +55,4 @@ const MembersTable = () => {
   );
 };
 
-export default MembersTable;
+export default EmployeeTable;

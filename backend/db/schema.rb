@@ -33,8 +33,9 @@ ActiveRecord::Schema.define(version: 2021_01_21_171435) do
     t.integer "employee_id", null: false
     t.integer "work_week_id", null: false
     t.string "date"
-    t.string "start_hour"
-    t.string "end_hour"
+    t.boolean "is_available"
+    t.string "start_time"
+    t.string "end_time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["employee_id"], name: "index_schedules_on_employee_id"

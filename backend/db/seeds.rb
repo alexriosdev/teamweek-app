@@ -40,7 +40,17 @@ u1 =
 end
 
 # Create Organization
-o1 = Organization.create(name: 'Winterfell', user_id: u1.id)
+o1 = Organization.create(
+  name: 'Winterfell',
+  location: Faker::Address.full_address,
+  user_id: u1.id
+)
+
+o2 = Organization.create(
+  name: 'Kings Landing',
+  location: Faker::Address.full_address,
+  user_id: u1.id
+)
 
 # Create Week
 week_1 = Date.parse('2021-01-24') # YEAR-MONTH-DAY

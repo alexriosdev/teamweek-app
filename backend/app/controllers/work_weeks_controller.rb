@@ -15,14 +15,26 @@ class WorkWeeksController < ApplicationController
 
   # Custom route to get schedules for a specified week
   def week_request
-    @week = Week.find_by(full_date: params[:full_date])
+    @week = Week.find_or_create_by(full_date: params[:full_date])
     if @week
-      @work_week = WorkWeek.find_by(week_id: @week.id)
+      @work_week = WorkWeek.find_or_create_by(week_id: @week.id, organization_id: params[:org_id])
       render json: @work_week
     else
       render json: @work_week.errors, status: :unprocessable_entity
     end      
   end
+  
+  # BEFORE
+  # # Custom route to get schedules for a specified week
+  # def week_request
+  #   @week = Week.find_by(full_date: params[:full_date])
+  #   if @week
+  #     @work_week = WorkWeek.find_by(week_id: @week.id)
+  #     render json: @work_week
+  #   else
+  #     render json: @work_week.errors, status: :unprocessable_entity
+  #   end      
+  # end
 
   # POST /work_weeks
   def create

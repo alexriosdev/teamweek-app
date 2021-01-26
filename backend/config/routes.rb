@@ -4,8 +4,8 @@ Rails
   .draw do
     post '/login', to: 'auth#login'
     post '/signup', to: 'auth#signup'
-    # post '/date_request', to: 'calendar_dates#date_request'
     post '/week_request', to: 'work_weeks#week_request'
+    post '/create_schedules', to: 'schedules#create_schedules'
     resources :organizations
     resources :users
     resources :weeks

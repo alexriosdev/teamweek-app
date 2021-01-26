@@ -13,6 +13,13 @@ class SchedulesController < ApplicationController
     render json: @schedule
   end
 
+  # Custom route for creating 7 daily schedules for the week
+  def create_schedules
+    7.times{
+      Schedule.create(schedule_params)
+    }
+  end
+
   # POST /schedules
   def create
     @schedule = Schedule.new(schedule_params)

@@ -4,7 +4,7 @@ class AuthController < ApplicationController
     if @user && @user.authenticate(params[:password])
       payload = { user_id: @user.id }
       token = JWT.encode(payload, 'teamweek')
-      render json: { auth_key: token, user: @user }, status: :ok
+      render json: { auth_key: token, user: @user, organizations: @user.organizations }, status: :ok
     else
       render json: { error: 'Login Failed' }, status: :unprocessable_entity
     end

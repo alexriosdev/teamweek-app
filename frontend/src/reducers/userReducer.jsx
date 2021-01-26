@@ -1,6 +1,5 @@
 const initialState = {
   users: [],
-  organization: {},
   currentUser: {
     id: null,
   },
@@ -9,7 +8,6 @@ const initialState = {
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_USERS":
-      // console.log(action)
       return {
         ...state,
         users: action.users,
@@ -18,11 +16,6 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         currentUser: action.user,
-      };
-    case "SET_ORGANIZATION":
-      return {
-        ...state,
-        organization: action.organization,
       };
     case "UPDATE_USERS":
       return {

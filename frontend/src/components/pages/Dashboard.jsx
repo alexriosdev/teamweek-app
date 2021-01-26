@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import clsx from "clsx";
 import {
@@ -26,6 +26,7 @@ import { PrimaryDrawer, SecondaryDrawer } from "../navbar/Drawer";
 import ScheduleContainer from "../schedule/ScheduleContainer";
 import Logout from "../auth/Logout";
 import EmployeeTable from "../employees/EmployeeTable";
+import SelectionScreen from "./SelectionScreen";
 
 const drawerWidth = 240;
 
@@ -123,9 +124,12 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
   const classes = useStyles();
 
-  const user = useSelector((state) => state.userState.currentUser.user);
+  const user = useSelector((state) => state.userState.currentUser);
+  const organization = useSelector(
+    (state) => state.organizationState.organization
+  );
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -133,31 +137,40 @@ const Dashboard = () => {
     setOpen(false);
   };
 
-  const [active, setActive] = React.useState("displaySchedule");
+  const [active, setActive] = useState("displaySelection");
   const handleActive = (value) => {
     setActive(value);
   };
+
+  console.log(organization);
 
   return (
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
         position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}
+        style={{ backgroundColor: "#212121" }}
+        className={
+          organization
+            ? clsx(classes.appBar, open && classes.appBarShift)
+            : null
+        }
       >
         <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(
-              classes.menuButton,
-              open && classes.menuButtonHidden
-            )}
-          >
-            <MenuIcon />
-          </IconButton>
+          {organization ? (
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              className={clsx(
+                classes.menuButton,
+                open && classes.menuButtonHidden
+              )}
+            >
+              <MenuIcon />
+            </IconButton>
+          ) : null}
           <Typography
             component="h1"
             variant="h5"
@@ -179,34 +192,37 @@ const Dashboard = () => {
           <Logout />
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          <PrimaryDrawer handleActive={handleActive} />
-        </List>
-        <Divider />
-        <List>
-          <SecondaryDrawer />
-        </List>
-      </Drawer>
+      {organization ? (
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+          }}
+          open={open}
+        >
+          <div className={classes.toolbarIcon}>
+            <IconButton onClick={handleDrawerClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          <List>
+            <PrimaryDrawer handleActive={handleActive} />
+          </List>
+          <Divider />
+          <List>
+            <SecondaryDrawer />
+          </List>
+        </Drawer>
+      ) : null}
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
+          {active === "displaySelection" && (
+            <SelectionScreen setActive={setActive} />
+          )}
           {active === "displaySchedule" && <ScheduleContainer />}
           {active === "displayEmployees" && <EmployeeTable />}
-          {/* <ScheduleContainer /> */}
-          {/* <EmployeeTable /> */}
         </Container>
       </main>
     </div>

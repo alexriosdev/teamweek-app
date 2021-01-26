@@ -1,5 +1,6 @@
 const initialState = {
   schedules: [],
+  work_week_id: null,
   currentSchedule: {
     id: null,
   },
@@ -11,6 +12,11 @@ const scheduleReducer = (state = initialState, action) => {
       return {
         ...state,
         schedules: action.schedules,
+      };
+    case "SET_WORK_WEEK_ID":
+      return {
+        ...state,
+        work_week_id: action.work_week_id,
       };
     case "SET_CURRENT_SCHEDULE":
       return {

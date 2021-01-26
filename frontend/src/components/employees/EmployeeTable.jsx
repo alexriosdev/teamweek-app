@@ -1,18 +1,45 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
-import Avatar from "@material-ui/core/Avatar";
+import { Avatar, Button } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEmployees } from "../../actions/apiActions";
+import CreateEmployee from "../dialogs/CreateEmployee";
 
 const EmployeeTable = () => {
   const users = useSelector((state) => state.userState.users);
-  const organization = useSelector((state) => state.userState.organization);
+  const organization = useSelector(
+    (state) => state.organizationState.organization
+  );
+  const [employees, setEmployees] = useState([]);
 
-  const dispatch = useDispatch();
+  const id = organization.id;
   useEffect(() => {
-    fetchEmployees(dispatch);
+    fetch(`http://localhost:3000/organizations/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const dataInput = data.users.map((user) => {
+          const fullName = `${user.first_name} ${user.last_name}`;
+          return createData(
+            user.avatar,
+            fullName,
+            user.email,
+            user.phone_number
+          );
+        });
+        setEmployees(dataInput);
+      });
   }, []);
+
+  const [open, setOpen] = useState(false);
+
+  const closeDialog = () => {
+    setOpen(false);
+  };
+
+  const openDialog = () => {
+    setOpen(true);
+  };
 
   const columns = [
     {
@@ -23,11 +50,11 @@ const EmployeeTable = () => {
     },
     { title: "Name", field: "name" },
     { title: "Email", field: "email" },
-    { title: "Phone Number", field: "phone" },
+    { title: "Phone Number", field: "phone_number" },
   ];
 
-  const createData = (avatar, name, email, phone) => {
-    return { avatar, name, email, phone };
+  const createData = (avatar, name, email, phone_number) => {
+    return { avatar, name, email, phone_number };
   };
 
   // Create Table Rows
@@ -46,12 +73,26 @@ const EmployeeTable = () => {
   };
 
   return (
-    <MaterialTable
-      title={`${organization.name} Employees`}
-      columns={columns}
-      data={dataInput}
-      options={options}
-    />
+    <>
+      <MaterialTable
+        title={`${organization.name} Employees`}
+        columns={columns}
+        data={employees}
+        options={options}
+      />
+      <br />
+      <Button onClick={openDialog} variant="contained" color="primary">
+        Create Employee
+      </Button>
+      {open ? (
+        <CreateEmployee
+          close={closeDialog}
+          organization={organization}
+          employees={employees}
+          setEmployees={setEmployees}
+        />
+      ) : null}
+    </>
   );
 };
 

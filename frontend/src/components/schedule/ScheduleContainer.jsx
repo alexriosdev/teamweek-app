@@ -46,6 +46,9 @@ const WeekPrinter = (date) => {
 };
 
 const ScheduleContainer = () => {
+  const organization = useSelector(
+    (state) => state.organizationState.organization
+  );
   const classes = useStyles();
   const currentWeek = WeekPrinter(new Date());
 
@@ -54,7 +57,11 @@ const ScheduleContainer = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    fetchWorkWeek(dispatch, { full_date: format(days[0], "P") });
+    const data = {
+      full_date: format(days[0], "P"),
+      org_id: organization.id,
+    };
+    fetchWorkWeek(dispatch, data);
   }, []);
 
   const handleForward = () => {

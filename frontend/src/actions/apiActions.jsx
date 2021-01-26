@@ -31,7 +31,7 @@ const userLogin = async (dispatch, user, history) => {
   const data = await response.json();
   if (data.hasOwnProperty("auth_key")) {
     localStorage.setItem("token", data.auth_key);
-    dispatch({ type: "SET_CURRENT_USER", user: data });
+    dispatch({ type: "SET_CURRENT_USER", user: data.user });
     auth.login(() => {
       history.push("/dashboard");
     });
@@ -46,7 +46,7 @@ const userSignup = async (dispatch, user, history) => {
   const data = await response.json();
   if (data.hasOwnProperty("auth_key")) {
     localStorage.setItem("token", data.auth_key);
-    dispatch({ type: "SET_CURRENT_USER", user: data });
+    dispatch({ type: "SET_CURRENT_USER", user: data.user });
     auth.login(() => {
       history.push("/dashboard");
     });
@@ -54,6 +54,13 @@ const userSignup = async (dispatch, user, history) => {
   } else {
     alert(data.error);
   }
+};
+
+const fetchOrganizations = async (dispatch) => {
+  const response = await fetch(`${URL}/organizations`);
+  const data = await response.json();
+  dispatch({ type: "SET_ORGANIZATIONS", organizations: data });
+  return data;
 };
 
 // Fetch All Users
@@ -64,8 +71,8 @@ const fetchUsers = async (dispatch) => {
 };
 
 // Fetch users from a particular organization
-const fetchEmployees = async (dispatch) => {
-  const response = await fetch(URL + "/organizations/1"); //
+const fetchEmployees = async (dispatch, id) => {
+  const response = await fetch(`${URL}/organizations/${id}`);
   const data = await response.json();
   const organization = {
     name: data.name,
@@ -76,32 +83,31 @@ const fetchEmployees = async (dispatch) => {
 };
 
 // Create an Employee
-const createEmployee = async (dispatch, user, organization) => {
-  console.log("SENT DATA", user);
-  const userObj = await fetch(URL + "/users", methodPost(user)).then((res) =>
+const createEmployee = async (dispatch, data) => {
+  // First Create The user
+  const user = await fetch(URL + "/users", methodPost(data.user)).then((res) =>
     res.json()
   );
-  console.log("RECEIVED USER", userObj);
-  const data = {
-    user_id: userObj.id,
-    organization_id: organization.id,
-  };
-  console.log("FORMATED DATA", data);
-
-  let eObj = await fetch(URL + "/employees", methodPost(data)).then((res) =>
+  // Then Create The Employee
+  const employee = { user_id: user.id, organization_id: data.org_id };
+  const e = await fetch(URL + "/employees", methodPost(employee)).then((res) =>
     res.json()
   );
-
-  dispatch({ type: "UPDATE_USERS", user: userObj });
+  // Then Create The Week Schedule for the Employee
+  const schedule = { employee_id: e.id, work_week_id: data.ww_id };
+  await fetch(URL + "/create_schedules", methodPost(schedule)).then((res) =>
+    res.json()
+  );
+  dispatch({ type: "UPDATE_USERS", user: user });
 };
 
 // Fetches the Working Schedule for a particular Week
-const fetchWorkWeek = async (dispatch, date) => {
-  const response = await fetch(URL + "/week_request", methodPost(date));
+const fetchWorkWeek = async (dispatch, obj) => {
+  const response = await fetch(URL + "/week_request", methodPost(obj));
   const data = await response.json();
-  // console.log(data.week_schedule);
   data.week_schedule
-    ? dispatch({ type: "SET_SCHEDULES", schedules: data.week_schedule })
+    ? dispatch({ type: "SET_SCHEDULES", schedules: data.week_schedule }) &&
+      dispatch({ type: "SET_WORK_WEEK_ID", work_week_id: data.id })
     : console.log("Unable to fetch Week Schedule");
 };
 
@@ -142,6 +148,7 @@ const updateSchedule = async (schedule) => {
 export {
   userLogin,
   userSignup,
+  fetchOrganizations,
   fetchUsers,
   fetchEmployees,
   fetchWorkWeek,

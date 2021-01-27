@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, Button, Typography } from "@material-ui/core";
-import OrganizationCard from "../organization/OrganizationCard";
+import OrganizationCard from "./OrganizationCard";
 import CreateOrganization from "../dialogs/CreateOrganization";
-import { fetchOrganizations } from "../../actions/apiActions";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -20,21 +19,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SelectionScreen = ({ setActive }) => {
+const OrganizationContainer = ({ setActive }) => {
   const classes = useStyles();
-
+  const orgs = useSelector((state) => state.organizationState.organizations);
   const [organizations, setOrganizations] = useState([]);
   const [open, setOpen] = useState(false);
 
-  const dispatch = useDispatch();
   useEffect(() => {
-    fetch(`http://localhost:3000/organizations`)
-      .then((res) => res.json())
-      .then((data) => {
-        setOrganizations(data);
-        dispatch({ type: "SET_ORGANIZATIONS", organizations: data });
-      });
-  }, []);
+    setOrganizations(orgs);
+  }, [orgs]);
 
   const closeDialog = () => {
     setOpen(false);
@@ -44,6 +37,7 @@ const SelectionScreen = ({ setActive }) => {
     setOpen(true);
   };
 
+  const dispatch = useDispatch();
   const handleSelect = (data) => {
     dispatch({ type: "SET_ORGANIZATION", organization: data });
     setActive("displaySchedule");
@@ -52,9 +46,7 @@ const SelectionScreen = ({ setActive }) => {
   return (
     <div className={classes.content}>
       <Container className={classes.container}>
-        <Typography variant="h5">
-          Please Select or Create an Organization to Continue
-        </Typography>
+        <Typography variant="h4">Your Organizations</Typography>
         <br />
         {organizations.map((organization, idx) => (
           <OrganizationCard
@@ -78,4 +70,4 @@ const SelectionScreen = ({ setActive }) => {
   );
 };
 
-export default SelectionScreen;
+export default OrganizationContainer;

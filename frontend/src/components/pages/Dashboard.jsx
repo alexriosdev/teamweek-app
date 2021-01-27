@@ -3,15 +3,11 @@ import { useSelector } from "react-redux";
 import clsx from "clsx";
 import {
   AppBar,
-  Avatar,
-  Badge,
-  Button,
   CssBaseline,
   Container,
   Divider,
   Drawer,
   IconButton,
-  Link,
   List,
   Toolbar,
   Typography,
@@ -23,21 +19,15 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import MenuIcon from "@material-ui/icons/Menu";
 import PersonIcon from "@material-ui/icons/Person";
 import { PrimaryDrawer, SecondaryDrawer } from "../navbar/Drawer";
+import OrganizationContainer from "../organization/OrganizationContainer";
 import ScheduleContainer from "../schedule/ScheduleContainer";
-import Logout from "../auth/Logout";
 import EmployeeTable from "../employees/EmployeeTable";
 import SelectionScreen from "./SelectionScreen";
+import Logout from "../auth/Logout";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.custom.dark,
-    height: "2rem",
-    width: "2rem",
-    // backgroundColor: theme.palette.common.black,
-  },
   root: {
     display: "flex",
   },
@@ -124,7 +114,6 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = () => {
   const classes = useStyles();
 
-  const user = useSelector((state) => state.userState.currentUser);
   const organization = useSelector(
     (state) => state.organizationState.organization
   );
@@ -141,8 +130,6 @@ const Dashboard = () => {
   const handleActive = (value) => {
     setActive(value);
   };
-
-  console.log(organization);
 
   return (
     <div className={classes.root}>
@@ -180,15 +167,6 @@ const Dashboard = () => {
           >
             TeamWeek
           </Typography>
-          {/* <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton> */}
-          <Typography component="h1" variant="h5">
-            {user ? user.first_name : "Not Logged In"}
-          </Typography>
-          <Avatar src={user.avatar} className={classes.avatar} />
           <Logout />
         </Toolbar>
       </AppBar>
@@ -222,6 +200,9 @@ const Dashboard = () => {
             <SelectionScreen setActive={setActive} />
           )}
           {active === "displaySchedule" && <ScheduleContainer />}
+          {active === "displayOrganizations" && (
+            <OrganizationContainer setActive={setActive} />
+          )}
           {active === "displayEmployees" && <EmployeeTable />}
         </Container>
       </main>

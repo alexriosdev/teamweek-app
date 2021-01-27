@@ -8,7 +8,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { blueTheme, redTheme, pinkTheme } from "./theme";
 
 ReactDOM.render(
-  <ThemeProvider theme={blueTheme}>
+  <ThemeProvider theme={pinkTheme}>
     <Provider store={store}>
       <App />
     </Provider>

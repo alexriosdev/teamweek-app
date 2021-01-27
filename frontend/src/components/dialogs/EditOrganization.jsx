@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -8,16 +9,20 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-const CreateOrganization = ({ close, organizations, setOrganizations }) => {
-  const org = useSelector((state) => state.organizationState.organization);
-  const user = useSelector((state) => state.userState.currentUser);
-  const initialState = {
-    name: "",
-    location: "",
-    user_id: user.id,
-  };
+const useStyles = makeStyles((theme) => ({
+  button: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.primary.contrastText,
+    "&:hover": {
+      background: theme.palette.primary.main,
+    },
+  },
+}));
 
-  const [organization, setOrganization] = useState(initialState);
+const EditOrganization = ({ close, org }) => {
+  const classes = useStyles();
+  const [organization, setOrganization] = useState(org);
+  const dispatch = useDispatch();
 
   const handleChange = (event) => {
     setOrganization({
@@ -26,41 +31,40 @@ const CreateOrganization = ({ close, organizations, setOrganizations }) => {
     });
   };
 
-  const dispatch = useDispatch();
   const handleSave = () => {
+    const org_id = organization.id;
     const options = {
-      method: "POST",
+      method: "PATCH",
       body: JSON.stringify(organization),
       headers: {
         "content-type": "application/json",
         Accept: "application/json",
       },
     };
-    fetch(`http://localhost:3000/organizations`, options)
+    fetch(`http://localhost:3000/organizations/${org_id}`, options)
       .then((res) => res.json())
-      .then((data) => {
-        if (org) {
-          dispatch({
-            type: "SET_ORGANIZATIONS",
-            organizations: [...organizations, data],
-          });
-        }
-        setOrganizations([...organizations, data]);
-      });
+      .then((data) =>
+        dispatch({ type: "UPDATE_ORGANIZATIONS", organization: data })
+      );
+    close();
+  };
+
+  const handleDelete = () => {
+    console.log(organization.id);
+    const org_id = organization.id;
+    const options = { method: "DELETE" };
+    fetch(`http://localhost:3000/organizations/${org_id}`, options);
+    dispatch({ type: "DELETE_ORGANIZATION", organization: organization });
     close();
   };
 
   return (
     <div>
       <Dialog open={true} onClose={close} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Create Organization</DialogTitle>
+        <DialogTitle id="form-dialog-title">Edit Organization</DialogTitle>
         <DialogContent>
-          {/* <DialogContentText>
-            Please Enter Name and Location of your New Organization
-          </DialogContentText> */}
           <TextField
             autoFocus
-            // required
             margin="dense"
             id="name"
             label="Organization Name"
@@ -84,6 +88,13 @@ const CreateOrganization = ({ close, organizations, setOrganizations }) => {
           />
         </DialogContent>
         <DialogActions>
+          <Button
+            onClick={handleDelete}
+            size="small"
+            className={classes.button}
+          >
+            Delete
+          </Button>
           <Button onClick={close} color="primary">
             Cancel
           </Button>
@@ -95,4 +106,4 @@ const CreateOrganization = ({ close, organizations, setOrganizations }) => {
     </div>
   );
 };
-export default CreateOrganization;
+export default EditOrganization;

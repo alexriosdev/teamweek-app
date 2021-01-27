@@ -20,7 +20,7 @@ const PrimaryDrawer = ({ handleActive }) => {
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItem>
-      <ListItem button onClick={() => alert("Feature Coming Soon")}>
+      <ListItem button onClick={() => handleActive("displayOrganizations")}>
         <ListItemIcon>
           <BusinessIcon />
         </ListItemIcon>

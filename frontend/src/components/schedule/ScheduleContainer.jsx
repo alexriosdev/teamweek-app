@@ -5,6 +5,7 @@ import { Container, IconButton, Typography } from "@material-ui/core";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import HomeIcon from "@material-ui/icons/Home";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import {
   eachDayOfInterval,
   format,
@@ -105,11 +106,23 @@ const ScheduleContainer = () => {
 
   return (
     <div className={classes.content}>
+      {console.log(schedules.length)}
       <Container className={classes.container}>
-        <Typography variant="h4">Week Schedule</Typography>
-        <DateControl startDay={days[0]} endDay={days[days.length - 1]} />
-        <WeekSchedule days={days} schedules={schedules} />
-        {/* <ScheduleTable days={days} schedules={schedules} /> */}
+        {schedules.length <= 0 ? (
+          <>
+            <Typography variant="h4">Create Employees to Continue</Typography>
+            <br />
+            <ArrowBackIcon />
+          </>
+        ) : (
+          <>
+            {/* <Typography variant="h4">Week Schedule</Typography> */}
+            <Typography variant="h4">{organization.name} Schedule</Typography>
+            <DateControl startDay={days[0]} endDay={days[days.length - 1]} />
+            <WeekSchedule days={days} schedules={schedules} />
+            {/* <ScheduleTable days={days} schedules={schedules} /> */}
+          </>
+        )}
       </Container>
     </div>
   );

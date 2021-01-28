@@ -40,7 +40,8 @@ const CreateEmployee = ({ close, organization, employees, setEmployees }) => {
     createEmployee(dispatch, data);
     const newEmployee = {
       profile: user.avatar,
-      name: `${user.first_name} ${user.last_name}`,
+      first_name: user.first_name,
+      last_name: user.last_name,
       email: user.email,
       phone_number: user.phone_number,
     };

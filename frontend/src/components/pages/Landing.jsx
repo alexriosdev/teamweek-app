@@ -14,6 +14,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
 import Nav from "../navbar/Nav";
+import bm from "../lottiefiles/business-meeting.gif";
+import cb from "../lottiefiles/calendar-booking.gif";
+import ti from "../lottiefiles/timer-icons.gif";
 
 const Copyright = () => {
   return (
@@ -59,7 +62,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const cards = [1, 2, 3];
+// const cards = [bm, cb, bt];
+const cards = [
+  {
+    image: bm,
+    title: "Manage Your Team",
+    description: "Use our tools to keep your business in order.",
+  },
+  {
+    image: cb,
+    title: "Easy Scheduling",
+    description: "Schedule shifts with just a couple of clicks.",
+  },
+  {
+    image: ti,
+    title: "Stay Focused",
+    description: "Keep track of your schedule at a single glance.",
+  },
+];
 
 const Landing = () => {
   const classes = useStyles();
@@ -94,14 +114,14 @@ const Landing = () => {
               <Grid container spacing={2} justify="center">
                 <Grid item>
                   <Button variant="contained" color="primary">
-                    Demo
+                    Get Started
                   </Button>
                 </Grid>
-                <Grid item>
+                {/* <Grid item>
                   <Button variant="outlined" color="primary">
                     Sign Up
                   </Button>
-                </Grid>
+                </Grid> */}
               </Grid>
             </div>
           </Container>
@@ -114,16 +134,19 @@ const Landing = () => {
                 <Card className={classes.card}>
                   <CardMedia
                     className={classes.cardMedia}
-                    image="https://source.unsplash.com/random"
+                    // image="https://source.unsplash.com/random"
+                    image={card.image}
                     title="Image title"
                   />
                   <CardContent className={classes.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {`Feature ${idx + 1}`}
+                      {card.title}
+                      {/* {`Feature ${idx + 1}`} */}
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe
-                      the content.
+                      {card.description}
+                      {/* This is a media card. You can use this section to describe
+                      the content. */}
                     </Typography>
                   </CardContent>
                 </Card>

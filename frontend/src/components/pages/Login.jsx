@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 const Login = () => {
   const classes = useStyles();
 
-  const initialState = { email: "test@test.com", password: "123" };
+  const initialState = { email: "user@email.com", password: "123" };
   const [user, setUser] = useState(initialState);
 
   const handleChange = (event) => {

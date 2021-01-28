@@ -4,10 +4,8 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import DateRange from "@material-ui/icons/DateRange";
 import PeopleIcon from "@material-ui/icons/People";
-import BarChartIcon from "@material-ui/icons/BarChart";
-import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import BusinessIcon from "@material-ui/icons/Business";
 
@@ -16,9 +14,10 @@ const PrimaryDrawer = ({ handleActive }) => {
     <div>
       <ListItem button onClick={() => handleActive("displaySchedule")}>
         <ListItemIcon>
-          <DashboardIcon />
+          <DateRange />
+          {/* <DashboardIcon /> */}
         </ListItemIcon>
-        <ListItemText primary="Dashboard" />
+        <ListItemText primary="Schedule" />
       </ListItem>
       <ListItem button onClick={() => handleActive("displayOrganizations")}>
         <ListItemIcon>
@@ -32,18 +31,6 @@ const PrimaryDrawer = ({ handleActive }) => {
         </ListItemIcon>
         <ListItemText primary="Employees" />
       </ListItem>
-      {/* <ListItem button>
-      <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Reports" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Integrations" />
-    </ListItem> */}
     </div>
   );
 };

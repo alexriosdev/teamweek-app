@@ -187,10 +187,10 @@ const Dashboard = () => {
           <List>
             <PrimaryDrawer handleActive={handleActive} />
           </List>
-          <Divider />
+          {/* <Divider />
           <List>
             <SecondaryDrawer />
-          </List>
+          </List> */}
         </Drawer>
       ) : null}
       <main className={classes.content}>

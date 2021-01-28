@@ -26,7 +26,7 @@ u1 = User.create(
     avatar: 'https://upload.wikimedia.org/wikipedia/en/3/30/Jon_Snow_Season_8.png'
 )
 
-u2 = User.create(
+u4 = User.create(
   email: Faker::Internet.email,
   password: '123',
   first_name: 'Jim',
@@ -44,11 +44,11 @@ u3 = User.create(
   avatar: 'https://i.pinimg.com/originals/f2/1d/ba/f21dbab3929c43a610d276ec88d72009.jpg'
 )
 
-u4 = User.create(
+u2 = User.create(
   email: Faker::Internet.email,
   password: '123',
-  first_name: 'Prison',
-  last_name: 'Mike',
+  first_name: 'Michael',
+  last_name: 'Scott',
   phone_number: Faker::PhoneNumber.cell_phone,
   avatar: 'https://www.seekpng.com/png/full/172-1726126_michael-scott-prison-prison-mike.png'
 )
@@ -145,8 +145,8 @@ office_employees.each do |e|
       work_week_id: WorkWeek.first.id,
       is_available: true,
       date: (week_1 + d).strftime('%m/%d/%Y'),
-      # start_time: Time.now.strftime('%I:%M %p'),
-      # end_time: (Time.now + 2.hours).strftime('%I:%M %p')
+      start_time: '9:00 AM',
+      end_time: '5:00 PM'
     )
   end
 end

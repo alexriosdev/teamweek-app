@@ -65,7 +65,7 @@ const CreateEmployee = ({ close, organization, employees, setEmployees }) => {
                 id="first_name"
                 name="first_name"
                 label="First Name"
-                autoComplete="fname"
+                // autoComplete="fname"
                 autoFocus
               />
             </Grid>

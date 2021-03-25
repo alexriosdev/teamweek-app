@@ -116,9 +116,7 @@ o2 = Organization.create(
 )
 
 # Create Week
-week_1 = Date.parse('2021-01-24') # YEAR-MONTH-DAY
-week_2 = Date.parse('2021-01-31') # YEAR-MONTH-DAY
-
+week_1 = Date.today.beginning_of_week(:sunday); # Current start of the week
 Week.create(full_date: week_1.strftime('%m/%d/%Y'))
 
 # Create Employee (Associate users & organization)
